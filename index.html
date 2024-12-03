@@ -9,21 +9,38 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      line-height: 1.6;
     }
     header {
       background-color: #333;
       color: #fff;
       padding: 20px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      max-height: 80px;
+      margin-right: 20px;
+    }
+    .hero-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
     }
     main {
       padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
     }
     section {
       margin-bottom: 40px;
     }
     h2 {
       color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
     }
     ul {
       list-style-type: disc;
@@ -41,13 +58,69 @@
       margin-top: 20px;
       cursor: pointer;
     }
+    
+    /* Contact Form Styles */
+    .contact-section {
+      background-color: #f4f4f4;
+      padding: 30px;
+      border-radius: 8px;
+    }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input, 
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+      background-color: #45a049;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+      margin-top: 5px;
+    }
+    #successMessage {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
   <header>
+    <img src="/api/placeholder/100/100" alt="Logo" class="logo">
     <h1>Computer Science Curriculum</h1>
   </header>
+
+  <img src="/api/placeholder/1200/400" alt="Hero Image" class="hero-image">
+
   <main>
+    <!-- Previous Curriculum Sections -->
     <section>
       <h2>First Trimester</h2>
       <ul id="first-trimester"></ul>
@@ -61,10 +134,45 @@
       <ul id="third-trimester"></ul>
     </section>
     <button id="toggle-btn">Toggle Visibility</button>
+
+    <!-- New Contact Section -->
+    <section class="contact-section">
+      <h2>Contact Me</h2>
+      <form id="contactForm" class="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+          <div id="nameError" class="error-message"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+          <div id="emailError" class="error-message"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+          <div id="messageError" class="error-message"></div>
+        </div>
+        
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+      <div id="successMessage">
+        Thank you for your message! I'll get back to you soon.
+      </div>
+    </section>
+
+    <!-- Social Media Links -->
+    <div class="contact-info">
+      <p>Connect with me:</p>
+      <p>Instagram: <a href="https://www.instagram.com/_osei.kofi" target="_blank">@_osei.kofi</a></p>
+    </div>
   </main>
 
   <script>
-    // Data for the curriculum
+    // Curriculum Population Script (Same as Previous)
     const curriculumData = {
       "First Trimester": [
         "Foundations Tools & Basics: Emacs, Vim, Git/GitHub",
@@ -99,7 +207,7 @@
       ]
     };
 
-    // Populate the curriculum sections
+    // Populate Curriculum Sections
     for (const [section, items] of Object.entries(curriculumData)) {
       const sectionElement = document.getElementById(`${section.toLowerCase().replace(' ', '-')}`);
       items.forEach(item => {
@@ -109,7 +217,7 @@
       });
     }
 
-    // Toggle visibility of curriculum sections
+    // Toggle Visibility Script (Same as Previous)
     const toggleBtn = document.getElementById('toggle-btn');
     const sections = document.querySelectorAll('section');
 
@@ -120,6 +228,68 @@
       });
       toggleBtn.textContent = isVisible ? 'Show Curriculum' : 'Hide Curriculum';
       isVisible = !isVisible;
+    });
+
+    // Form Validation and Submission
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const messageError = document.getElementById('messageError');
+    const successMessage = document.getElementById('successMessage');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Reset previous error messages
+      nameError.textContent = '';
+      emailError.textContent = '';
+      messageError.textContent = '';
+
+      // Validation
+      let isValid = true;
+
+      // Name validation
+      if (nameInput.value.trim().length < 2) {
+        nameError.textContent = 'Please enter a valid name';
+        isValid = false;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailInput.value)) {
+        emailError.textContent = 'Please enter a valid email address';
+        isValid = false;
+      }
+
+      // Message validation
+      if (messageInput.value.trim().length < 10) {
+        messageError.textContent = 'Message must be at least 10 characters long';
+        isValid = false;
+      }
+
+      // If all validations pass
+      if (isValid) {
+        // In a real-world scenario, you'd send this to a backend service
+        console.log('Form submitted:', {
+          name: nameInput.value,
+          email: emailInput.value,
+          message: messageInput.value
+        });
+
+        // Show success message
+        successMessage.style.display = 'block';
+
+        // Clear form
+        form.reset();
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 3000);
+      }
     });
   </script>
 </body>
