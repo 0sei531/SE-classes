@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Computer Science Curriculum</title>
   <style>
+    /* Previous CSS remains the same */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -110,6 +111,8 @@
       margin-top: 15px;
     }
   </style>
+  <!-- EmailJS Library -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
   <header>
@@ -135,7 +138,7 @@
     </section>
     <button id="toggle-btn">Toggle Visibility</button>
 
-    <!-- New Contact Section -->
+    <!-- Contact Section -->
     <section class="contact-section">
       <h2>Contact Me</h2>
       <form id="contactForm" class="contact-form">
@@ -207,6 +210,11 @@
       ]
     };
 
+    // Initialize EmailJS
+    (function(){
+      emailjs.init("Igbuy-eW9Uq87ExzR");
+    })();
+
     // Populate Curriculum Sections
     for (const [section, items] of Object.entries(curriculumData)) {
       const sectionElement = document.getElementById(`${section.toLowerCase().replace(' ', '-')}`);
@@ -217,7 +225,7 @@
       });
     }
 
-    // Toggle Visibility Script (Same as Previous)
+    // Toggle Visibility Script
     const toggleBtn = document.getElementById('toggle-btn');
     const sections = document.querySelectorAll('section');
 
@@ -272,23 +280,29 @@
 
       // If all validations pass
       if (isValid) {
-        // In a real-world scenario, you'd send this to a backend service
-        console.log('Form submitted:', {
-          name: nameInput.value,
-          email: emailInput.value,
-          message: messageInput.value
-        });
-
-        // Show success message
-        successMessage.style.display = 'block';
-
-        // Clear form
-        form.reset();
-
-        // Hide success message after 3 seconds
-        setTimeout(() => {
-          successMessage.style.display = 'none';
-        }, 3000);
+        // Send email using EmailJS
+        emailjs.send(
+          "default_service",  // Use default service
+          "template_v9zr1gb", // Your template ID
+          {
+            from_name: nameInput.value,
+            from_email: emailInput.value,
+            message: messageInput.value
+          }
+        ).then(
+          function(response) {
+            console.log("SUCCESS", response);
+            successMessage.style.display = 'block';
+            form.reset();
+            setTimeout(() => {
+              successMessage.style.display = 'none';
+            }, 3000);
+          },
+          function(error) {
+            console.log("FAILED", error);
+            alert("Failed to send message. Please try again.");
+          }
+        );
       }
     });
   </script>
